@@ -19,7 +19,7 @@
 						 <li class="with-x" 
             v-if='searchParams.keyword'
             >
-              {{searchParams.keyword}}
+              {{searchParams.keyword}}<i @click="removeKeyword">×</i>
             </li>
             
             
@@ -175,7 +175,7 @@ export default {
     },
 		removeCategoryName(){
 			this.searchParams.categoryName=undefined
-			  this.searchParams.category1Id = undefined;
+			this.searchParams.category1Id = undefined;
       this.searchParams.category2Id = undefined;
       this.searchParams.category3Id = undefined;
 			//this.$route.params=undefined
@@ -185,7 +185,13 @@ export default {
 				 this.$router.push({ name: "search", params: this.$route.params });
 				 }
 			
-		}
+		},
+    removeKeyword(){
+      this.keyword=undefined
+      this.getData();
+      Object.assign(this.searchParams,this.$route.query)
+    },
+    
   },
   computed: {
     ...mapGetters(["goodList"]),
