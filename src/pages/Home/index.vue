@@ -47,7 +47,11 @@ return{
         },
         mounted(){
              //this.$route.query={}
-         
+            let sss=['']
+            //let sb=0
+            //sss=`${sb}:sb`
+            console.log(typeof(sss))
+            console.log(sss)
            this.$store.dispatch('floorList')
             
         }

@@ -26,7 +26,7 @@
       <div class="fl value">
         <ul class="type-list">
           <!-- 平台相应售卖的属性的属性值:粉色，蓝色，黑色... -->
-          <li v-for="attrValue in attr.attrValueList" :key="attrValue">
+          <li v-for="attrValue in attr.attrValueList" :key="attrValue"  @click="attrInfo(attr,attrValue)">
             <a>{{ attrValue }}</a>
           </li>
         </ul>
@@ -45,7 +45,12 @@ export default {
   },
   methods:{
     tradeMatkHandler(trademark){
-
+      //console.log(trademark)
+      this.$emit("trademarkInfo",trademark)
+    },
+    attrInfo(attr,attrValue){
+      //["属性ID:属性值:属性名"]
+      this.$emit("attrInfo",attr,attrValue);
     }
   }
 };

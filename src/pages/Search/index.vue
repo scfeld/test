@@ -21,24 +21,35 @@
             >
               {{searchParams.keyword}}<i @click="removeKeyword">×</i>
             </li>
-            
+             <li class="with-x" 
+            v-if='this.searchParams.trademark'
+            >
+              {{this.searchParams.trademark.split(":")[1]}}<i @click="removeTradeMark">×</i>
+            </li>
+             <li
+              class="with-x"
+              v-for="(attrValue, index) in searchParams.props"
+              :key="index"
+            >
+              {{ attrValue.split(":")[1] }}<i @click="removeAttr(index)">×</i>
+            </li>
             
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector  @trademarkInfo="trademarkInfo"  @attrInfo="attrInfo"/>
 
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{active:isOne}"  @click="changeOrder('1')">
+                  <a href="#">综合<i v-if="isAsc&&isOne">⬆</i><i v-else-if="isDesc&&isOne">⬇</i></a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
+                <li >
+                  <a >销量</a>
                 </li>
                 <li>
                   <a href="#">新品</a>
@@ -46,12 +57,10 @@
                 <li>
                   <a href="#">评价</a>
                 </li>
-                <li>
-                  <a href="#">价格⬆</a>
+                <li :class="{active:isTow}" @click="changeOrder('2')">
+                  <a >价格<i v-show="isTow" v-if="isAsc&&isTow">⬆</i><i v-else-if="isDesc&&isTow">⬇</i></a>
                 </li>
-                <li>
-                  <a href="#">价格⬇</a>
-                </li>
+               
               </ul>
             </div>
           </div>
@@ -61,7 +70,7 @@
               <li class="yui3-u-1-5" v-for="good in goodList" :key="good.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <img src="good.defaultImg" />
+                    <img :src="good.defaultImg" width="100%" height="100%"/>
                   </div>
                   <div class="price">
                     <strong>
@@ -196,10 +205,67 @@ export default {
       //console.log(this.keyword)
       this.$router.push({ name: "search", query: this.$route.query});
     },
-    
+    trademarkInfo(trademark){
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
+      this.getData();
+    },
+    removeTradeMark(){
+      this.searchParams.trademark=undefined
+      thsi.getData()
+    },
+     attrInfo(attr, attrValue) {
+      //["属性ID:属性值:属性名"]
+      //console.log(attr, attrValue);
+      //参数格式整理好
+      let props = `${attr.attrId}:${attrValue}:${attr.attrName}`;
+      //数组去重
+      //if语句里面只有一行代码：可以省略大花括号
+      if (this.searchParams.props.indexOf(props) == -1)
+        this.searchParams.props.push(props);
+      //再次发请求
+      this.getData();
+    },
+    //removeAttr删除售卖的属性
+    removeAttr(index) {
+      //再次整理参数
+      this.searchParams.props.splice(index, 1);
+      //再次发请求
+      this.getData();
+    },
+    changeOrder(flag){
+      let originSort=this.searchParams.order.split(":")[1]
+      if(flag==this.searchParams.order.split(":")[0]){
+        this.searchParams.order = `${flag}:${originSort == "desc" ? "asc" : "desc"}`;
+      }else{
+        this.searchParams.order = `${flag}:desc`;
+      }
+      this.getData();
+    }
+   
   },
   computed: {
     ...mapGetters(["goodList"]),
+     isOne(){
+     if( this.searchParams.order.split(":")[0]==1)
+    
+      return true
+     else
+      return false
+    },
+    isTow(){
+     if( this.searchParams.order.split(":")[0]==2)
+     return true
+    },
+     isAsc(){
+     //if( this.searchParams.order.split(":")[1]=="asc")
+    return this.searchParams.order.split(":")[1]=="asc"
+      //return true
+    
+    },
+    isDesc(){
+     if( this.searchParams.order.split(":")[1]=="desc")
+     return true
+    }
   },
   watch: {
     $route(){
