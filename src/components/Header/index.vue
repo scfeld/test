@@ -62,6 +62,7 @@ export default {
   created() {},
   mounted() {
     //console.log(123)
+    this.$bus.$on('clear',this.clear)
   },
   methods: {
     goSearch() {
@@ -82,6 +83,9 @@ export default {
         console.log(this.keyword);
       
     },
+    clear(){
+      this.keyword=undefined
+    }
   },
 };
 </script>

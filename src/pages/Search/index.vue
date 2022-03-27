@@ -181,15 +181,20 @@ export default {
 			//this.$route.params=undefined
 		//	this.$route.query=''
 			if(this.$route.query){ 
-				console.log('nihao1')
+			//	console.log('nihao1')
 				 this.$router.push({ name: "search", params: this.$route.params });
 				 }
 			
 		},
     removeKeyword(){
-      this.keyword=undefined
+      this.searchParams.keyword=undefined
+      //console.log(   this.keyword)
       this.getData();
-      Object.assign(this.searchParams,this.$route.query)
+      this.$bus.$emit("clear");
+      //this.$route.query={}
+      //Object.assign(this.searchParams,this.$route.query)
+      //console.log(this.keyword)
+      this.$router.push({ name: "search", query: this.$route.query});
     },
     
   },

@@ -32,7 +32,7 @@ export default new VueRouter({
         component: Home
     }, {
         name: 'search',
-        path: "/search/:keyword",
+        path: "/search/:keyword?",
         component: Search,
         props: true
     }, {
